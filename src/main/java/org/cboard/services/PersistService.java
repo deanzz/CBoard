@@ -47,6 +47,7 @@ public class PersistService {
             TASK_MAP.put(persistId, context);
             String uuid = UUID.randomUUID().toString().replaceAll("-", "");
             LocalSecurityFilter.put(uuid, userId);
+            LOG.info(" LocalSecurityFilter.put(uuid, userId)");
             String phantomUrl = new StringBuffer(LocalSecurityFilter.getSchema())
                     .append("://127.0.0.1:")
                     .append(LocalSecurityFilter.getContext())
