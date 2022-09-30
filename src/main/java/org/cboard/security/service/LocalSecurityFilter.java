@@ -31,6 +31,8 @@ public class LocalSecurityFilter implements Filter {
             return null;
         }
     });
+    
+    private static User haveLoginUser;
 
     public static void put(String sid, String uid) {
         sidCache.put(sid, uid);
@@ -57,21 +59,30 @@ public class LocalSecurityFilter implements Filter {
             schema = hsr.getScheme();
         }
         LOG.info("hsr.getServletPath(): " + hsr.getServletPath());
-        if ("/render.html".equals(hsr.getServletPath())) {
+        //if ("/render.html".equals(hsr.getServletPath())) {
             //String sid = hsr.getParameter("sid");
             try {
-                String uid = "1";// test user "admin" //sidCache.get(sid);
+                if (haveLoginUser == null) {
+                    String uid = "1";
+                    haveLoginUser = new User("admin", "", new ArrayList<>());
+                    haveLoginUser.setUserId(uid/*sidCache.get(sid)*/);
+                    SecurityContext context = SecurityContextHolder.getContext();
+                    context.setAuthentication(new ShareAuthenticationToken(haveLoginUser));
+                    hsr.getSession().setAttribute("SPRING_SECURITY_CONTEXT", context);
+                }
+/*                String uid = "1";// test user "admin" //sidCache.get(sid);
                 if (StringUtils.isNotEmpty(uid)) {
-                    User user = new User("shareUser", "", new ArrayList<>());
-                    user.setUserId(uid/*sidCache.get(sid)*/);
+                    //User user = new User("shareUser", "", new ArrayList<>());
+                    User user = new User("admin", "", new ArrayList<>());
+                    user.setUserId(uid*//*sidCache.get(sid)*//*);
                     SecurityContext context = SecurityContextHolder.getContext();
                     context.setAuthentication(new ShareAuthenticationToken(user));
                     hsr.getSession().setAttribute("SPRING_SECURITY_CONTEXT", context);
-                }
+                }*/
             } catch (Exception e) {
                 LOG.error("", e);
             }
-        }
+        //}
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
