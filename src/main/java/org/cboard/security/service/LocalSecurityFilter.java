@@ -56,6 +56,7 @@ public class LocalSecurityFilter implements Filter {
             context = hsr.getLocalPort() + hsr.getContextPath();
             schema = hsr.getScheme();
         }
+        LOG.info("hsr.getServletPath(): " + hsr.getServletPath());
         if ("/render.html".equals(hsr.getServletPath())) {
             String sid = hsr.getParameter("sid");
             try {
