@@ -8,6 +8,7 @@ import org.cboard.dto.User;
 import org.cboard.security.ShareAuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -32,7 +33,6 @@ public class LocalSecurityFilter implements Filter {
         }
     });
     
-    private static User haveLoginUser;
 
     public static void put(String sid, String uid) {
         sidCache.put(sid, uid);
@@ -62,14 +62,24 @@ public class LocalSecurityFilter implements Filter {
         //if ("/render.html".equals(hsr.getServletPath())) {
             //String sid = hsr.getParameter("sid");
             try {
-                if (haveLoginUser == null) {
+                SecurityContext context = SecurityContextHolder.getContext();
+                if (context == null || context.getAuthentication() == null || context.getAuthentication().getPrincipal() == null) {
                     String uid = "1";
-                    haveLoginUser = new User("admin", "", new ArrayList<>());
-                    haveLoginUser.setUserId(uid/*sidCache.get(sid)*/);
-                    SecurityContext context = SecurityContextHolder.getContext();
+                    User haveLoginUser = new User("admin", "", new ArrayList<>());
+                    haveLoginUser.setUserId(uid);
+                    context = SecurityContextHolder.getContext();
                     context.setAuthentication(new ShareAuthenticationToken(haveLoginUser));
                     hsr.getSession().setAttribute("SPRING_SECURITY_CONTEXT", context);
                 }
+                
+               /* if (haveLoginUser == null) {
+                    String uid = "1";
+                    haveLoginUser = new User("admin", "", new ArrayList<>());
+                    haveLoginUser.setUserId(uid*//*sidCache.get(sid)*//*);
+                    SecurityContext context = SecurityContextHolder.getContext();
+                    context.setAuthentication(new ShareAuthenticationToken(haveLoginUser));
+                    hsr.getSession().setAttribute("SPRING_SECURITY_CONTEXT", context);
+                }*/
 /*                String uid = "1";// test user "admin" //sidCache.get(sid);
                 if (StringUtils.isNotEmpty(uid)) {
                     //User user = new User("shareUser", "", new ArrayList<>());
