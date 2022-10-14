@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = {"org.cboard.controller"})
-@PropertySource(value = {"classpath:config.properties"})
+@PropertySource(value = {"classpath:conf/config.properties"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class WebConfig extends WebMvcConfigurerAdapter {
 
